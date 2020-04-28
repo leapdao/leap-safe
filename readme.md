@@ -139,3 +139,4 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 ## Acknowledgments
 
 * Thanks for Gnosis Team for providing the Safe contracts.
+* Island SVG by Freepik (http://www.freepik.com)
