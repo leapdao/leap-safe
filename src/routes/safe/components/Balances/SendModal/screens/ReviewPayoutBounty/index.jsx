@@ -52,7 +52,7 @@ const ReviewPayoutBounty = ({ closeSnackbar, enqueueSnackbar, onClose, onPrev, t
   const [gasCosts, setGasCosts] = useState<string>('< 0.001')
   const [data, setData] = useState('')
 
-  const txToken = tokens.find((token) => token.name === 'Dai')
+  const txToken = tokens.find((token) => token.symbol === 'DAI')
   const isSendingETH = false
   const txRecipient = getBountyPayoutContractAddr()
 
@@ -61,8 +61,7 @@ const ReviewPayoutBounty = ({ closeSnackbar, enqueueSnackbar, onClose, onPrev, t
 
     const estimateGas = async () => {
       const web3 = getWeb3()
-      const { fromWei, padLeft, toBN } = web3.utils
-      const { toBigNumber, toHex } = web3
+      const { fromWei, padLeft, toBN, toHex } = web3.utils
 
       let txData = EMPTY_DATA
 
@@ -73,7 +72,7 @@ const ReviewPayoutBounty = ({ closeSnackbar, enqueueSnackbar, onClose, onPrev, t
       const stripHexPrefix = (v) => v.replace('0x', '')
 
       const _getInput = (_address, _amount, _isRepOnly) => {
-        const _amountBN = toBigNumber(_amount * 10 ** 18)
+        const _amountBN = toBN(_amount * 10 ** 18)
         const _amountHex = padLeft(
           stripHexPrefix(toHex(_isRepOnly ? _amountBN.add(1).toString() : _amountBN.toString())),
           24,
@@ -82,16 +81,20 @@ const ReviewPayoutBounty = ({ closeSnackbar, enqueueSnackbar, onClose, onPrev, t
       }
 
       const gardenerInput = _getInput(tx.gardenerAddress, tx.gardenerAmount, tx.gardenerIsRep)
-      const workerInput = _getInput(tx.workerAddress, tx.workerAmount, tx.workerIsRep)
-      const reviewerInput = _getInput(tx.reviewerAddress, tx.reviewerAmount, tx.reviewerIsRep)
+      let workerInput, reviewerInput
+      if (tx.showWorkerField) {
+        workerInput = _getInput(tx.workerAddress, tx.workerAmount, tx.workerIsRep)
+      }
+      if (tx.showReviewerField) {
+        reviewerInput = _getInput(tx.reviewerAddress, tx.reviewerAmount, tx.reviewerIsRep)
+      }
 
       if (tx.showWorkerField && tx.showReviewerField) {
-        txData = bountyContract.contract.methods.payout(gardenerInput, workerInput, reviewerInput, bountyId).encodeABI
+        txData = bountyContract.methods.payout(gardenerInput, workerInput, reviewerInput, bountyId).encodeABI
       } else if (tx.showWorkerField) {
-        txData = bountyContract.contract.methods.payoutNoReviewer(gardenerInput, workerInput, bountyId).encodeABI
+        txData = bountyContract.methods.payoutNoReviewer(gardenerInput, workerInput, bountyId).encodeABI
       } else if (tx.showReviewerField) {
-        txData = bountyContract.contract.methods.payoutReviewedDelivery(gardenerInput, reviewerInput, bountyId)
-          .encodeABI
+        txData = bountyContract.methods.payoutReviewedDelivery(gardenerInput, reviewerInput, bountyId).encodeABI
       }
 
       const estimatedGasCosts = await estimateTxGasCosts(safeAddress, txRecipient, txData)
