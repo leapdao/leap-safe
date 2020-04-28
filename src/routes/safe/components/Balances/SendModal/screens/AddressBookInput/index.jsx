@@ -22,6 +22,7 @@ type Props = {
   isCustomTx?: boolean,
   recipientAddress?: string,
   pristine: boolean,
+  label: string,
 }
 
 const textFieldLabelStyle = makeStyles(() => ({
@@ -55,6 +56,7 @@ const AddressBookInput = ({
   classes,
   fieldMutator,
   isCustomTx,
+  label,
   pristine,
   recipientAddress,
   setIsValidAddress,
@@ -184,7 +186,7 @@ const AddressBookInput = ({
               },
               className: statusClasses,
             }}
-            label={!isValidForm ? validationText : 'Recipient'}
+            label={!isValidForm ? validationText : label || 'Recipient'}
             onChange={(event) => {
               setInputTouched(true)
               onAddressInputChanged(event.target.value)
