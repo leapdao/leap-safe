@@ -39,7 +39,7 @@ const PayoutBounty = ({ initialValues, onClose, onNext }: Props) => {
   const classes = useStyles()
   const { address: safeAddress, ethBalance, name: safeName } = useSelector(safeSelector)
   const activeTokens = useSelector(extendedSafeTokensSelector)
-  const token = activeTokens.find((t) => t.name === 'Dai')
+  const token = activeTokens.find((t) => t.symbol === 'DAI')
   const daiBalance = token.balance
   const daiBalanceStr = `${formatAmount(token.balance)} ${token.symbol}`
   const [selectedGardener, setSelectedGardener] = useState<Object | null>({
