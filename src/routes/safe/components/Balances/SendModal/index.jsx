@@ -22,6 +22,10 @@ const ContractInteraction = React.lazy(() => import('./screens/ContractInteracti
 
 const ContractInteractionReview = React.lazy(() => import('./screens/ContractInteraction/Review'))
 
+const PayoutBounty = React.lazy(() => import('./screens/PayoutBounty'))
+
+const ReviewPayoutBounty = React.lazy(() => import('./screens/ReviewPayoutBounty'))
+
 type ActiveScreen =
   | 'chooseTxType'
   | 'sendFunds'
@@ -30,6 +34,8 @@ type ActiveScreen =
   | 'contractInteractionReview'
   | 'sendCollectible'
   | 'reviewCollectible'
+  | 'payoutBounty'
+  | 'reviewPayoutBounty'
 
 type Props = {
   activeScreenType: ActiveScreen,
@@ -92,6 +98,11 @@ const SendModal = ({ activeScreenType, isOpen, onClose, recipientAddress, select
     setTx(txInfo)
   }
 
+  const handlePayoutBounty = (txInfo) => {
+    setActiveScreen('reviewPayoutBounty')
+    setTx(txInfo)
+  }
+
   return (
     <Modal
       description="Send Tokens Form"
@@ -144,6 +155,12 @@ const SendModal = ({ activeScreenType, isOpen, onClose, recipientAddress, select
         )}
         {activeScreen === 'reviewCollectible' && (
           <ReviewCollectible onClose={onClose} onPrev={() => setActiveScreen('sendCollectible')} tx={tx} />
+        )}
+        {activeScreen === 'payoutBounty' && (
+          <PayoutBounty initialValues={tx} onClose={onClose} onNext={handlePayoutBounty} />
+        )}
+        {activeScreen === 'reviewPayoutBounty' && (
+          <ReviewPayoutBounty onClose={onClose} onPrev={() => setActiveScreen('payoutBounty')} tx={tx} />
         )}
       </Suspense>
     </Modal>
