@@ -6,6 +6,7 @@ import classNames from 'classnames/bind'
 import * as React from 'react'
 import { useSelector } from 'react-redux'
 
+import Bounty from '../assets/bounty.svg'
 import Collectible from '../assets/collectibles.svg'
 import Token from '../assets/token.svg'
 
@@ -110,6 +111,17 @@ const ChooseTxType = ({ onClose, recipientAddress, setActiveScreen }: Props) => 
       )}
       <Row align="center">
         <Col className={classes.buttonColumn} layout="column" middle="xs">
+          <Button
+            className={classes.firstButton}
+            color="primary"
+            minHeight={52}
+            minWidth={260}
+            onClick={() => setActiveScreen('payoutBounty')}
+            variant="contained"
+          >
+            <Img alt="Payout Bounty" className={classNames(classes.leftIcon, classes.iconSmall)} src={Bounty} />
+            Payout Bounty
+          </Button>
           <Button
             className={classes.firstButton}
             color="primary"
