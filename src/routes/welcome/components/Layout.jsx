@@ -79,10 +79,10 @@ const Welcome = ({ isOldMultisigMigration, provider }: Props) => {
     </>
   ) : (
     <>
-      Gnosis Safe Multisig is the most secure way to manage crypto funds
+      LeapDAO Safe is based on Gnosis Safe Multisig — the most secure way to manage crypto funds
       <br />
       collectively. It is an improvement of the Gnosis MultiSig, which is used by more than 3000 teams
-      <br /> and stores over $1B USD worth of digital assets. Gnosis Safe Multisig features a modular
+      <br /> and stores over $1B USD worth of digital assets. LeapDAO Safe features a modular
       <br /> design, formally verified smart contracts and vastly improved user experience.{' '}
     </>
   )
@@ -91,7 +91,7 @@ const Welcome = ({ isOldMultisigMigration, provider }: Props) => {
       <Heading align="center" margin="lg" tag="h1" weight="bold">
         Welcome to
         <br />
-        Gnosis Safe Multisig
+        LeapDAO Safe Multisig
       </Heading>
       <Heading align="center" margin="xl" tag="h3">
         {headingText}

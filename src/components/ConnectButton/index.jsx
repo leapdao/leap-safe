@@ -45,7 +45,7 @@ export const onboard = new Onboard({
     },
   },
   walletSelect: {
-    description: 'Please select a wallet to connect to Gnosis Safe Multisig',
+    description: 'Please select a wallet to connect to LeapDAO Safe Multisig',
     wallets,
   },
   walletCheck: [
