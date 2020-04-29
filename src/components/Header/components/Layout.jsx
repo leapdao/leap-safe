@@ -19,7 +19,7 @@ import Img from '~/components/layout/Img'
 import Row from '~/components/layout/Row'
 import { border, headerHeight, md, screenSm, sm } from '~/theme/variables'
 
-const logo = require('../assets/gnosis-safe-multisig-logo.svg')
+const logo = require('../assets/leap-safe.png')
 
 type Props = Open & {
   classes: Object,
@@ -48,7 +48,7 @@ const styles = () => ({
     zIndex: 1301,
   },
   logo: {
-    flexBasis: '95px',
+    flexBasis: '115px',
     flexShrink: '0',
     flexGrow: '0',
     maxWidth: '55px',
@@ -59,6 +59,15 @@ const styles = () => ({
       paddingRight: md,
     },
   },
+  logoTitle: {
+    fontSize: '11px',
+    color: '#000',
+    marginLeft: '2px',
+    lineHeight: '11px',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+  },
   popper: {
     zIndex: 2000,
   },
@@ -67,8 +76,14 @@ const styles = () => ({
 const Layout = openHoc(({ classes, clickAway, open, providerDetails, providerInfo, toggle }: Props) => (
   <Row className={classes.summary}>
     <Col className={classes.logo} middle="xs" start="xs">
-      <Link to="/">
-        <Img alt="Gnosis Team Safe" height={32} src={logo} />
+      <Link style={{ textDecoration: 'none' }} to="/">
+        <div style={{ display: 'flex' }}>
+          <Img alt="LeapDAO Team Safe" height={32} src={logo} />
+          <div className={classes.logoTitle}>
+            <div style={{ fontWeight: 'bold' }}>LeapDAO Safe</div>
+            <div>Multisig</div>
+          </div>
+        </div>
       </Link>
     </Col>
     <Divider />
