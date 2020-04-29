@@ -11,6 +11,7 @@ import { styles } from './style'
 import CopyBtn from '~/components/CopyBtn'
 import EtherscanBtn from '~/components/EtherscanBtn'
 import Identicon from '~/components/Identicon'
+import Checkbox from '~/components/forms/Checkbox'
 import Field from '~/components/forms/Field'
 import GnoForm from '~/components/forms/GnoForm'
 import TextField from '~/components/forms/TextField'
@@ -21,7 +22,7 @@ import Col from '~/components/layout/Col'
 import Hairline from '~/components/layout/Hairline'
 import Paragraph from '~/components/layout/Paragraph'
 import Row from '~/components/layout/Row'
-import { formatAmount } from '~/logic/tokens/utils/formatAmount'
+import { getBountyTokenAddr } from '~/config/index'
 import SafeInfo from '~/routes/safe/components/Balances/SendModal/SafeInfo'
 import AddressBookInput from '~/routes/safe/components/Balances/SendModal/screens/AddressBookInput'
 import { extendedSafeTokensSelector } from '~/routes/safe/container/selector'
@@ -39,9 +40,8 @@ const PayoutBounty = ({ initialValues, onClose, onNext }: Props) => {
   const classes = useStyles()
   const { address: safeAddress, ethBalance, name: safeName } = useSelector(safeSelector)
   const activeTokens = useSelector(extendedSafeTokensSelector)
-  const token = activeTokens.find((t) => t.symbol === 'DAI')
-  const daiBalance = token.balance
-  const daiBalanceStr = `${formatAmount(token.balance)} ${token.symbol}`
+  const bountyTokenAddress = getBountyTokenAddr()
+  const txToken = activeTokens.find((t) => t.address === bountyTokenAddress)
   const [selectedGardener, setSelectedGardener] = useState<Object | null>({
     address: '',
     name: '',
@@ -68,7 +68,7 @@ const PayoutBounty = ({ initialValues, onClose, onNext }: Props) => {
   }, [selectedGardener, pristine])
 
   const handleSubmit = (values) => {
-    if (values.gardenerAddress && values.workerAddress) {
+    if (isValidForm) {
       onNext({ ...values, showWorkerField, showReviewerField })
     }
   }
@@ -118,8 +118,8 @@ const PayoutBounty = ({ initialValues, onClose, onNext }: Props) => {
             <>
               <Block className={classes.formContainer}>
                 <SafeInfo
-                  daiBalance={daiBalanceStr}
                   ethBalance={ethBalance}
+                  primaryToken={txToken}
                   safeAddress={safeAddress}
                   safeName={safeName}
                 />
@@ -199,7 +199,7 @@ const PayoutBounty = ({ initialValues, onClose, onNext }: Props) => {
                   </>
                 )}
                 <Row margin="md">
-                  <Col>
+                  <Col xs={5}>
                     <Field
                       className={classes.addressInput}
                       component={TextField}
@@ -210,8 +210,16 @@ const PayoutBounty = ({ initialValues, onClose, onNext }: Props) => {
                       placeholder="Amount"
                       text="Amount"
                       type="text"
-                      validate={composeValidators(mustBeFloat, maxValue(daiBalance))}
+                      validate={composeValidators(mustBeFloat, maxValue(txToken.balance))}
                     />
+                  </Col>
+                  <Col xs={7}>
+                    <Block justify="left">
+                      <Field className={classes.checkbox} component={Checkbox} name="gardenerIsRep" type="checkbox" />
+                      <Paragraph className={classes.checkboxLabel} size="md" weight="bolder">
+                        Reputation only
+                      </Paragraph>
+                    </Block>
                   </Col>
                 </Row>
                 <Row margin="md">
@@ -281,7 +289,7 @@ const PayoutBounty = ({ initialValues, onClose, onNext }: Props) => {
                       </>
                     )}
                     <Row margin="md">
-                      <Col>
+                      <Col xs={5}>
                         <Field
                           className={classes.addressInput}
                           component={TextField}
@@ -292,8 +300,16 @@ const PayoutBounty = ({ initialValues, onClose, onNext }: Props) => {
                           placeholder="Amount"
                           text="Amount"
                           type="text"
-                          validate={composeValidators(mustBeFloat, maxValue(daiBalance))}
+                          validate={composeValidators(mustBeFloat, maxValue(txToken.balance))}
                         />
+                      </Col>
+                      <Col xs={7}>
+                        <Block justify="left">
+                          <Field className={classes.checkbox} component={Checkbox} name="workerIsRep" type="checkbox" />
+                          <Paragraph className={classes.checkboxLabel} size="md" weight="bolder">
+                            Reputation only
+                          </Paragraph>
+                        </Block>
                       </Col>
                     </Row>
                   </>
@@ -365,7 +381,7 @@ const PayoutBounty = ({ initialValues, onClose, onNext }: Props) => {
                       </>
                     )}
                     <Row margin="md">
-                      <Col>
+                      <Col xs={5}>
                         <Field
                           className={classes.addressInput}
                           component={TextField}
@@ -376,8 +392,21 @@ const PayoutBounty = ({ initialValues, onClose, onNext }: Props) => {
                           placeholder="Amount"
                           text="Amount"
                           type="text"
-                          validate={composeValidators(mustBeFloat, maxValue(daiBalance))}
+                          validate={composeValidators(mustBeFloat, maxValue(txToken.balance))}
                         />
+                      </Col>
+                      <Col xs={7}>
+                        <Block justify="left">
+                          <Field
+                            className={classes.checkbox}
+                            component={Checkbox}
+                            name="reviewerIsRep"
+                            type="checkbox"
+                          />
+                          <Paragraph className={classes.checkboxLabel} size="md" weight="bolder">
+                            Reputation only
+                          </Paragraph>
+                        </Block>
                       </Col>
                     </Row>
                   </>

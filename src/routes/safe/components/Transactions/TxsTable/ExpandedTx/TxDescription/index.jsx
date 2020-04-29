@@ -5,14 +5,23 @@ import { useSelector } from 'react-redux'
 
 import { getTxData } from './utils'
 
+import CopyBtn from '~/components/CopyBtn'
+import EtherscanBtn from '~/components/EtherscanBtn'
 import EtherscanLink from '~/components/EtherscanLink'
 import Block from '~/components/layout/Block'
 import Bold from '~/components/layout/Bold'
 import LinkWithRef from '~/components/layout/Link'
 import Paragraph from '~/components/layout/Paragraph'
+<<<<<<< HEAD
 import { getNameFromAddressBook } from '~/logic/addressBook/store/selectors'
+=======
+import { getBountyPayoutContractAddr } from '~/config/index'
+import { getNameFromAddressBook } from '~/logic/addressBook/utils'
+import bountyPayoutAbi from '~/logic/bounty/bountyPayout.abi.js'
+>>>>>>> support only rep, add validations etc
 import { SAFE_METHODS_NAMES } from '~/logic/contracts/methodIds'
 import { shortVersionOf } from '~/logic/wallets/ethAddresses'
+import { getWeb3 } from '~/logic/wallets/getWeb3'
 import OwnerAddressTableCell from '~/routes/safe/components/Settings/ManageOwners/OwnerAddressTableCell'
 import { getTxAmount } from '~/routes/safe/components/Transactions/TxsTable/columns'
 import { type Transaction } from '~/routes/safe/store/models/transaction'
@@ -66,6 +75,11 @@ type CustomDescProps = {
   recipient: string,
   data: string,
   classes: Object,
+}
+
+type BountyPersonField = {
+  label: string,
+  value: string,
 }
 
 const TransferDescription = ({ amount = '', recipient }: TransferDescProps) => {
@@ -209,6 +223,76 @@ const CustomDescription = ({ amount = 0, classes, data, recipient }: CustomDescP
   )
 }
 
+const web3 = getWeb3()
+
+const funcSigs = ['payoutNoReviewer', 'payoutReviewedDelivery', 'payout'].reduce((acc, funcName) => {
+  const funcAbi = bountyPayoutAbi.find((e) => e.name === funcName)
+  const funcSig = web3.eth.abi.encodeFunctionSignature(funcAbi)
+  acc[funcSig] = funcAbi
+  return acc
+}, {})
+
+const decodePayoutAmount = (param) => {
+  const val = web3.utils.toBN(param.substring(42), 16)
+  const roundValue = val.div(web3.utils.toBN(String(10 ** 16))).toNumber() / 100
+  const isRepOnly = val.toString().slice(-1) === '1'
+  const unit = isRepOnly ? 'reputation points' : 'DAI'
+  return `${roundValue} ${unit}`
+}
+
+const BountyPerson = ({ label, value }: BountyPersonField) => {
+  const addr = web3.utils.toChecksumAddress(value.substring(0, 42))
+  const recipientName = getNameFromAddressBook(addr)
+
+  return (
+    <div>
+      <div style={{ fontWeight: 'bold' }}>{label}:</div>
+      <div>Value: {decodePayoutAmount(value)}</div>
+      <div>
+        {recipientName ? (
+          <div style={{ display: 'flex' }}>
+            Address: {recipientName}
+            <div style={{ display: 'flex', marginLeft: '0.5rem' }}>
+              <CopyBtn content={addr} />
+              <EtherscanBtn type="address" value={addr} />
+            </div>
+          </div>
+        ) : (
+          <EtherscanLink knownAddress={false} type="address" value={addr} />
+        )}
+      </div>
+    </div>
+  )
+}
+
+const BountyTxDescription = ({ classes, data }: CustomDescProps) => {
+  const funcSig = data.substring(0, 10)
+  const rawParams = data.slice(10)
+  const { inputs } = funcSigs[funcSig]
+  const params = web3.eth.abi.decodeParameters(inputs, `0x${rawParams}`)
+  return (
+    <>
+      <Block className={classes.txData} data-testid={TRANSACTIONS_DESC_CUSTOM_DATA_TEST_ID}>
+        <Bold>Bounty payout:</Bold>
+        <Paragraph className={classes.txDataParagraph} noMargin size="md">
+          {params._bountyId && (
+            <p>
+              Bounty:{' '}
+              <a href={'https://github.com/leapdao/' + web3.utils.hexToAscii(params._bountyId)}>
+                {web3.utils.hexToAscii(params._bountyId)}
+              </a>
+            </p>
+          )}
+
+          {params._gardener && <BountyPerson label="Gardener" value={params._gardener} />}
+          {params._worker && <BountyPerson label="Worker" value={params._worker} />}
+          {params._reviewer && <BountyPerson label="Reviewer" value={params._reviewer} />}
+        </Paragraph>
+      </Block>
+    </>
+  )
+}
+
 const TxDescription = ({ classes, tx }: Props) => {
   const {
     action,
@@ -224,6 +308,7 @@ const TxDescription = ({ classes, tx }: Props) => {
     upgradeTx,
   } = getTxData(tx)
   const amount = getTxAmount(tx, false)
+  const bountyPayoutAddr = getBountyPayoutContractAddr()
   return (
     <Block className={classes.txDataContainer}>
       {modifySettingsTx && action && (
@@ -234,12 +319,18 @@ const TxDescription = ({ classes, tx }: Props) => {
           removedOwner={removedOwner}
         />
       )}
-      {!upgradeTx && customTx && (
-        <CustomDescription amount={amount} classes={classes} data={data} recipient={recipient} />
-      )}
-      {upgradeTx && <div>{data}</div>}
-      {!cancellationTx && !modifySettingsTx && !customTx && !creationTx && !upgradeTx && (
-        <TransferDescription amount={amount} recipient={recipient} />
+      {recipient === bountyPayoutAddr ? (
+        <BountyTxDescription classes={classes} data={data} />
+      ) : (
+        <>
+          {!upgradeTx && customTx && (
+            <CustomDescription amount={amount} classes={classes} data={data} recipient={recipient} />
+          )}
+          {upgradeTx && <div>{data}</div>}
+          {!cancellationTx && !modifySettingsTx && !customTx && !creationTx && !upgradeTx && (
+            <TransferDescription amount={amount} recipient={recipient} />
+          )}
+        </>
       )}
     </Block>
   )

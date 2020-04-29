@@ -20,7 +20,7 @@ import Hairline from '~/components/layout/Hairline'
 import Img from '~/components/layout/Img'
 import Paragraph from '~/components/layout/Paragraph'
 import Row from '~/components/layout/Row'
-import { getBountyPayoutContractAddr } from '~/config/index'
+import { getBountyPayoutContractAddr, getBountyTokenAddr } from '~/config/index'
 import bountyPayoutAbi from '~/logic/bounty/bountyPayout.abi.js'
 import { TX_NOTIFICATION_TYPES } from '~/logic/safe/transactions'
 import { estimateTxGasCosts } from '~/logic/safe/transactions/gasNew'
@@ -52,7 +52,8 @@ const ReviewPayoutBounty = ({ closeSnackbar, enqueueSnackbar, onClose, onPrev, t
   const [gasCosts, setGasCosts] = useState<string>('< 0.001')
   const [data, setData] = useState('')
 
-  const txToken = tokens.find((token) => token.symbol === 'DAI')
+  const bountyTokenAddr = getBountyTokenAddr()
+  const txToken = tokens.find((token) => token.address === bountyTokenAddr)
   const isSendingETH = false
   const txRecipient = getBountyPayoutContractAddr()
 
@@ -74,7 +75,7 @@ const ReviewPayoutBounty = ({ closeSnackbar, enqueueSnackbar, onClose, onPrev, t
       const _getInput = (_address, _amount, _isRepOnly) => {
         const _amountBN = toBN(_amount * 10 ** 18)
         const _amountHex = padLeft(
-          stripHexPrefix(toHex(_isRepOnly ? _amountBN.add(1).toString() : _amountBN.toString())),
+          stripHexPrefix(toHex(_isRepOnly ? _amountBN.add(toBN(1)).toString() : _amountBN.toString())),
           24,
         )
         return `0x${stripHexPrefix(_address)}${_amountHex}`
@@ -148,7 +149,7 @@ const ReviewPayoutBounty = ({ closeSnackbar, enqueueSnackbar, onClose, onPrev, t
       </Row>
       <Hairline />
       <Block className={classes.container}>
-        <SafeInfo daiBalance={txToken.balance} ethBalance={ethBalance} safeAddress={safeAddress} safeName={safeName} />
+        <SafeInfo ethBalance={ethBalance} primaryToken={txToken} safeAddress={safeAddress} safeName={safeName} />
         <Row margin="md">
           <Col xs={1}>
             <img alt="Arrow Down" src={ArrowDown} style={{ marginLeft: sm }} />
