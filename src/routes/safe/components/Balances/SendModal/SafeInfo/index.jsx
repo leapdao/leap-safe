@@ -32,11 +32,11 @@ type Props = {
   safeAddress: string,
   safeName: string,
   ethBalance: string,
-  daiBalance?: string,
+  primaryToken?: Object,
 }
 
 const SafeInfo = (props: Props) => {
-  const { daiBalance, ethBalance, safeAddress, safeName } = props
+  const { ethBalance, primaryToken, safeAddress, safeName } = props
   const classes = useStyles()
 
   return (
@@ -58,9 +58,9 @@ const SafeInfo = (props: Props) => {
         <Block className={classes.balanceContainer}>
           <Paragraph noMargin>
             Balance: <Bold>{`${ethBalance} ETH`}</Bold>
-            {daiBalance && (
+            {primaryToken && (
               <>
-                {' ,'} <Bold>{`${daiBalance}`}</Bold>
+                {' ,'} <Bold>{`${primaryToken.balance} ${primaryToken.symbol}`}</Bold>
               </>
             )}
           </Paragraph>

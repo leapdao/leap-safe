@@ -5,7 +5,8 @@ import {
   RELAY_API_URL,
   SIGNATURES_VIA_METAMASK,
   TX_SERVICE_HOST,
-  BOUNTY_PAYOUT_ADDR
+  BOUNTY_PAYOUT_ADDR,
+  BOUNTY_TOKEN_ADDR,
 } from "~/config/names"
 import devConfig from "./development"
 import testConfig from "./testing"
@@ -82,3 +83,5 @@ export const getExchangeRatesUrl = () => 'https://api.exchangeratesapi.io/latest
 export const getSafeLastVersion = () => process.env.REACT_APP_LATEST_SAFE_VERSION  || '1.1.1'
 
 export const getBountyPayoutContractAddr = () => getConfig()[BOUNTY_PAYOUT_ADDR]
+
+export const getBountyTokenAddr = () => getConfig()[BOUNTY_TOKEN_ADDR]
