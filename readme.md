@@ -29,25 +29,32 @@ yarn install
 
 For using the Rinkeby services:
 ```
-yarn start
+REACT_APP_INFURA_TOKEN=<infura project id> yarn start
 ```
 
 If you prefer using Mainnet ones:
 ```
-yarn start-mainnet
+REACT_APP_BLOCKNATIVE_KEY=<blocknative.com api key> REACT_APP_INFURA_TOKEN=<infura project id> yarn start-mainnet
 ```
 
 ### Building
 For Rinkeby:
 ```
-yarn build
+REACT_APP_INFURA_TOKEN=<infura project id> yarn build
 ```
 
 For Mainnet:
 ```
-yarn build-mainnet
+REACT_APP_BLOCKNATIVE_KEY=<blocknative.com api key> REACT_APP_INFURA_TOKEN=<infura project id> yarn build-mainnet
 ```
 
+### Deploy on safe.leapdao.org
+
+Run with appropriate AWS profile:
+
+```sh
+REACT_APP_BLOCKNATIVE_KEY=<blocknative.com api key> REACT_APP_INFURA_TOKEN=<infura project id> yarn deploy:mainnet
+```
 
 ## Running the tests
 
