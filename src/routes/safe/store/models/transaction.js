@@ -7,7 +7,7 @@ import { type Confirmation } from '~/routes/safe/store/models/confirmation'
 
 export const OUTGOING_TX_TYPE = 'outgoing'
 
-export type TransactionType = 'incoming' | 'outgoing' | 'settings' | 'custom' | 'creation' | 'cancellation'
+export type TransactionType = 'incoming' | 'outgoing' | 'settings' | 'custom' | 'creation' | 'cancellation' | 'bounty'
 
 export type TransactionStatus =
   | 'awaiting_your_confirmation'
@@ -90,6 +90,8 @@ export const makeTransaction: RecordFactory<TransactionProps> = Record({
   refundParams: null,
   type: 'outgoing',
   origin: null,
+  isBountyTx: false,
+  bountyParams: {},
 })
 
 export type Transaction = RecordOf<TransactionProps>

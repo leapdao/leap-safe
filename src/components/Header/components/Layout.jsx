@@ -51,7 +51,7 @@ const styles = () => ({
     flexBasis: '115px',
     flexShrink: '0',
     flexGrow: '0',
-    maxWidth: '55px',
+    maxWidth: '115px',
     padding: sm,
     [`@media (min-width: ${screenSm}px)`]: {
       maxWidth: 'none',

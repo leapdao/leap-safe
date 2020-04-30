@@ -8,6 +8,7 @@ import TxType from './TxType'
 
 import { type Column } from '~/components/Table/TableHead'
 import { type SortRow, buildOrderFieldFrom } from '~/components/Table/sorting'
+import { getBountyPayoutContractAddr } from '~/config/index'
 import { formatAmount } from '~/logic/tokens/utils/formatAmount'
 import { INCOMING_TX_TYPES, type IncomingTransaction } from '~/routes/safe/store/models/incomingTransaction'
 import { type Transaction } from '~/routes/safe/store/models/transaction'
@@ -59,10 +60,10 @@ export const getIncomingTxAmount = (tx: IncomingTransaction, formatted: boolean 
 }
 
 export const getTxAmount = (tx: Transaction, formatted: boolean = true) => {
-  const { decimals = 18, decodedParams, isTokenTransfer, symbol } = tx
-  const { value } = isTokenTransfer && decodedParams && decodedParams.value ? decodedParams : tx
+  const { decimals = 18, decodedParams, isBountyTx, isTokenTransfer, symbol } = tx
+  const { value } = (isTokenTransfer || isBountyTx) && decodedParams && decodedParams.value ? decodedParams : tx
 
-  if (!isTokenTransfer && !(Number(value) > 0)) {
+  if (!isTokenTransfer && !isBountyTx && !(Number(value) > 0)) {
     return NOT_AVAILABLE
   }
 
@@ -83,12 +84,13 @@ const getIncomingTxTableData = (tx: IncomingTransaction): TransactionRow => ({
 
 const getTransactionTableData = (tx: Transaction, cancelTx: ?Transaction): TransactionRow => {
   const txDate = tx.submissionDate
-
   let txType = 'outgoing'
   if (tx.modifySettingsTx) {
     txType = 'settings'
   } else if (tx.cancellationTx) {
     txType = 'cancellation'
+  } else if (tx.recipient === getBountyPayoutContractAddr()) {
+    txType = 'bounty'
   } else if (tx.customTx) {
     txType = 'custom'
   } else if (tx.creationTx) {

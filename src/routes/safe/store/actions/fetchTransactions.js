@@ -9,6 +9,7 @@ import type { Dispatch as ReduxDispatch } from 'redux'
 import { addIncomingTransactions } from './addIncomingTransactions'
 import { addTransactions } from './addTransactions'
 
+import bounty from '~/logic/bounty/index'
 import generateBatchRequests from '~/logic/contracts/generateBatchRequests'
 import { decodeParamsFromSafeMethod } from '~/logic/contracts/methodIds'
 import { buildIncomingTxServiceUrl } from '~/logic/safe/transactions/incomingTxHistory'
@@ -18,6 +19,7 @@ import { TOKEN_REDUCER_ID } from '~/logic/tokens/store/reducer/tokens'
 import { ALTERNATIVE_TOKEN_ABI } from '~/logic/tokens/utils/alternativeAbi'
 import {
   SAFE_TRANSFER_FROM_WITHOUT_DATA_HASH,
+  isBountyPayoutTransaction,
   isMultisendTransaction,
   isTokenTransfer,
   isUpgradeTransaction,
@@ -113,6 +115,7 @@ export const buildTransactionFrom = async (
   let isSendTokenTx = !isERC721Token && isTokenTransfer(tx.data, Number(tx.value))
   const isMultiSendTx = isMultisendTransaction(tx.data, Number(tx.value))
   const isUpgradeTx = isMultiSendTx && isUpgradeTransaction(tx.data)
+  const isBountyPayout = isBountyPayoutTransaction(tx.to)
   let customTx = !sameAddress(tx.to, safeAddress) && !!tx.data && !isSendTokenTx && !isUpgradeTx && !isERC721Token
 
   let refundParams = null
@@ -165,6 +168,13 @@ export const buildTransactionFrom = async (
   } else if (customTx && tx.data) {
     decodedParams = decodeParamsFromSafeMethod(tx.data)
   }
+  let bountyParams
+  if (isBountyPayout) {
+    bountyParams = bounty.decodeParams(tx.data)
+    decodedParams = {}
+    symbol = 'DAI'
+    decimals = 18
+  }
 
   return makeTransaction({
     symbol,
@@ -198,6 +208,8 @@ export const buildTransactionFrom = async (
     cancellationTx,
     creationTx: tx.creationTx,
     origin: tx.origin,
+    isBountyTx: isBountyPayout,
+    bountyParams,
   })
 }
 
