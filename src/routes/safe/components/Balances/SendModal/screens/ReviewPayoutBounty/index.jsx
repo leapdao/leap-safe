@@ -62,13 +62,13 @@ const ReviewPayoutBounty = ({ closeSnackbar, enqueueSnackbar, onClose, onPrev, t
 
     const estimateGas = async () => {
       const web3 = getWeb3()
-      const { fromWei, padLeft, toBN, toHex } = web3.utils
+      const { asciiToHex, fromWei, padLeft, toBN, toHex } = web3.utils
 
       let txData = EMPTY_DATA
 
       const bountyContract = new web3.eth.Contract(bountyPayoutAbi, txRecipient)
 
-      const bountyId = toHex(tx.bountyLink.replace('https://github.com/leapdao', ''))
+      const bountyId = asciiToHex(tx.bountyLink.replace('https://github.com/leapdao', ''))
 
       const stripHexPrefix = (v) => v.replace('0x', '')
 
