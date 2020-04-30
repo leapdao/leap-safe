@@ -38,9 +38,6 @@ export const getTxData = (tx: Transaction): DecodedTxData => {
     txData.value = fromWei(toBN(tx.decodedParams.value), 'ether')
   } else if (tx.isBountyTx) {
     txData.data = tx.bountyParams
-    if (tx.decodedParams.value) {
-      txData.value = fromWei(toBN(tx.decodedParams.value), 'ether')
-    }
   } else if (tx.customTx) {
     txData.recipient = tx.recipient
     txData.value = fromWei(toBN(tx.value), 'ether')
