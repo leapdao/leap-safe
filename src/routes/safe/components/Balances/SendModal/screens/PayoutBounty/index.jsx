@@ -15,7 +15,7 @@ import Checkbox from '~/components/forms/Checkbox'
 import Field from '~/components/forms/Field'
 import GnoForm from '~/components/forms/GnoForm'
 import TextField from '~/components/forms/TextField'
-import { composeValidators, maxValue, mustBeFloat } from '~/components/forms/validator'
+import { composeValidators, maxValue, mustBeFloat, required } from '~/components/forms/validator'
 import Block from '~/components/layout/Block'
 import Button from '~/components/layout/Button'
 import Col from '~/components/layout/Col'
@@ -65,7 +65,6 @@ const PayoutBounty = ({ initialValues, onClose, onNext }: Props) => {
   })
 
   const [pristine, setPristine] = useState<boolean>(true)
-  const [, setIsValidAddress] = useState<boolean>(true)
   const [showWorkerField, setShowWorkerField] = useState<boolean>(false)
   const [showReviewerField, setShowReviewerField] = useState<boolean>(false)
 
@@ -76,7 +75,7 @@ const PayoutBounty = ({ initialValues, onClose, onNext }: Props) => {
   }, [selectedGardener, pristine])
 
   const handleSubmit = (values) => {
-    if (isValidForm) {
+    if (validate(values)) {
       onNext({ ...values, showWorkerField, showReviewerField })
     }
   }
@@ -93,15 +92,20 @@ const PayoutBounty = ({ initialValues, onClose, onNext }: Props) => {
     },
   }
 
-  const isValidForm = () => {
-    return (
-      selectedWorker &&
-      selectedWorker.address &&
-      selectedReviewer &&
-      selectedReviewer.address &&
-      selectedGardener &&
-      selectedGardener.address
-    )
+  const validate = (values) => {
+    if (!values.bountyLink) return false
+
+    if (!values.gardenerAddress || !values.gardenerAmount) return false
+
+    if (showWorkerField) {
+      if (!values.workerAddress || !values.workerAmount) return false
+    }
+
+    if (showReviewerField) {
+      if (!values.reviewerAddress || !values.reviewerAmount) return false
+    }
+
+    return true
   }
 
   return (
@@ -119,8 +123,9 @@ const PayoutBounty = ({ initialValues, onClose, onNext }: Props) => {
       <GnoForm formMutators={formMutators} initialValues={initialValues} onSubmit={handleSubmit}>
         {(...args) => {
           const mutators = args[3]
+          const { values } = args[2]
 
-          const shouldDisableSubmitButton = !isValidForm
+          const isValid = validate(values)
 
           return (
             <>
@@ -139,6 +144,7 @@ const PayoutBounty = ({ initialValues, onClose, onNext }: Props) => {
                       placeholder="Link to bounty ticket"
                       text="Link to bounty ticket"
                       type="text"
+                      validate={required}
                     />
                   </Col>
                 </Row>
@@ -196,10 +202,9 @@ const PayoutBounty = ({ initialValues, onClose, onNext }: Props) => {
                       <Col>
                         <AddressBookInput
                           fieldMutator={mutators.setGardenerAddress}
-                          isCustomTx
                           label="Address"
                           pristine={pristine}
-                          setIsValidAddress={setIsValidAddress}
+                          setIsValidAddress={() => true}
                           setSelectedEntry={setSelectedGardener}
                         />
                       </Col>
@@ -218,7 +223,7 @@ const PayoutBounty = ({ initialValues, onClose, onNext }: Props) => {
                       placeholder="Amount"
                       text="Amount"
                       type="text"
-                      validate={composeValidators(mustBeFloat, maxValue(txToken.balance))}
+                      validate={composeValidators(required, mustBeFloat, maxValue(txToken.balance))}
                     />
                   </Col>
                   <Col xs={7}>
@@ -286,10 +291,9 @@ const PayoutBounty = ({ initialValues, onClose, onNext }: Props) => {
                           <Col>
                             <AddressBookInput
                               fieldMutator={mutators.setWorkerAddress}
-                              isCustomTx
                               label="Address"
                               pristine={pristine}
-                              setIsValidAddress={setIsValidAddress}
+                              setIsValidAddress={() => true}
                               setSelectedEntry={setSelectedWorker}
                             />
                           </Col>
@@ -308,7 +312,7 @@ const PayoutBounty = ({ initialValues, onClose, onNext }: Props) => {
                           placeholder="Amount"
                           text="Amount"
                           type="text"
-                          validate={composeValidators(mustBeFloat, maxValue(txToken.balance))}
+                          validate={composeValidators(required, mustBeFloat, maxValue(txToken.balance))}
                         />
                       </Col>
                       <Col xs={7}>
@@ -378,10 +382,9 @@ const PayoutBounty = ({ initialValues, onClose, onNext }: Props) => {
                           <Col>
                             <AddressBookInput
                               fieldMutator={mutators.setReviewerAddress}
-                              isCustomTx
                               label="Address"
                               pristine={pristine}
-                              setIsValidAddress={setIsValidAddress}
+                              setIsValidAddress={() => true}
                               setSelectedEntry={setSelectedReviewer}
                             />
                           </Col>
@@ -400,7 +403,7 @@ const PayoutBounty = ({ initialValues, onClose, onNext }: Props) => {
                           placeholder="Amount"
                           text="Amount"
                           type="text"
-                          validate={composeValidators(mustBeFloat, maxValue(txToken.balance))}
+                          validate={composeValidators(required, mustBeFloat, maxValue(txToken.balance))}
                         />
                       </Col>
                       <Col xs={7}>
@@ -429,7 +432,7 @@ const PayoutBounty = ({ initialValues, onClose, onNext }: Props) => {
                   className={classes.submitButton}
                   color="primary"
                   data-testid="review-tx-btn"
-                  disabled={shouldDisableSubmitButton}
+                  disabled={!isValid}
                   minWidth={140}
                   type="submit"
                   variant="contained"
