@@ -42,6 +42,14 @@ const PayoutBounty = ({ initialValues, onClose, onNext }: Props) => {
   const activeTokens = useSelector(extendedSafeTokensSelector)
   const bountyTokenAddress = getBountyTokenAddr()
   const txToken = activeTokens.find((t) => t.address === bountyTokenAddress)
+  if (!txToken) {
+    return (
+      <div style={{ padding: '2rem' }}>
+        <h2>Bounty token is not enabled</h2>
+        <p>Please enable token {bountyTokenAddress} for the safe.</p>
+      </div>
+    )
+  }
   const [selectedGardener, setSelectedGardener] = useState<Object | null>({
     address: '',
     name: '',
