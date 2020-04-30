@@ -93,6 +93,8 @@ const PayoutBounty = ({ initialValues, onClose, onNext }: Props) => {
   }
 
   const validate = (values) => {
+    if (!showWorkerField && !showReviewerField) return false
+
     if (!values.bountyLink) return false
 
     if (!values.gardenerAddress || !values.gardenerAmount) return false
