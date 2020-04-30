@@ -61,8 +61,12 @@ export const getIncomingTxAmount = (tx: IncomingTransaction, formatted: boolean 
 
 export const getTxAmount = (tx: Transaction, formatted: boolean = true) => {
   const { decimals = 18, decodedParams, isBountyTx, isTokenTransfer, symbol } = tx
-  const { value } = (isTokenTransfer || isBountyTx) && decodedParams && decodedParams.value ? decodedParams : tx
-
+  let value
+  if (isBountyTx) {
+    value = tx.bountyParams.value
+  } else {
+    value = isTokenTransfer && decodedParams && decodedParams.value ? decodedParams.value : tx.value
+  }
   if (!isTokenTransfer && !isBountyTx && !(Number(value) > 0)) {
     return NOT_AVAILABLE
   }

@@ -41,7 +41,7 @@ const decodeParams = (params) => {
       amount: decodePayoutAmount(decodedParams._gardener),
     }
     if (!bountyData.gardener.amount.isRepOnly) {
-      value.add(toBN(bountyData.gardener.amount.value))
+      value = value.add(toBN(bountyData.gardener.amount.value))
     }
   }
   if (decodedParams._worker) {
@@ -50,7 +50,7 @@ const decodeParams = (params) => {
       amount: decodePayoutAmount(decodedParams._worker),
     }
     if (!bountyData.worker.amount.isRepOnly) {
-      value.add(toBN(bountyData.worker.amount.value))
+      value = value.add(toBN(bountyData.worker.amount.value))
     }
   }
   if (decodedParams._reviewer) {
@@ -59,11 +59,11 @@ const decodeParams = (params) => {
       amount: decodePayoutAmount(decodedParams._reviewer),
     }
     if (!bountyData.reviewer.amount.isRepOnly) {
-      value.add(toBN(bountyData.reviewer.amount.value))
+      value = value.add(toBN(bountyData.reviewer.amount.value))
     }
   }
 
-  bountyData.value = value.mul(toBN(10 ** 18))
+  bountyData.value = value.mul(toBN(10 ** 18)).toString()
   return bountyData
 }
 
