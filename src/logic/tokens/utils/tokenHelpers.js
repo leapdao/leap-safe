@@ -3,6 +3,7 @@ import ERC20Detailed from '@openzeppelin/contracts/build/contracts/ERC20Detailed
 import { List } from 'immutable'
 
 import logo from '~/assets/icons/icon_etherTokens.svg'
+import { getBountyPayoutContractAddr } from '~/config/index'
 import { getStandardTokenContract } from '~/logic/tokens/store/actions/fetchTokens'
 import { type Token, makeToken } from '~/logic/tokens/store/model/token'
 import { getWeb3 } from '~/logic/wallets/getWeb3'
@@ -73,6 +74,8 @@ export const isTokenTransfer = (data: string, value: number): boolean =>
 
 export const isMultisendTransaction = (data: string, value: number): boolean =>
   !!data && data.substring(0, 10) === '0x8d80ff0a' && value === 0
+
+export const isBountyPayoutTransaction = (recipient: string): boolean => recipient === getBountyPayoutContractAddr()
 
 // 7de7edef - changeMasterCopy (308, 8)
 // f08a0323 - setFallbackHandler (550, 8)

@@ -12,16 +12,11 @@ import Block from '~/components/layout/Block'
 import Bold from '~/components/layout/Bold'
 import LinkWithRef from '~/components/layout/Link'
 import Paragraph from '~/components/layout/Paragraph'
-<<<<<<< HEAD
-import { getNameFromAddressBook } from '~/logic/addressBook/store/selectors'
-=======
 import { getBountyPayoutContractAddr } from '~/config/index'
-import { getNameFromAddressBook } from '~/logic/addressBook/utils'
+import { getNameFromAddressBook } from '~/logic/addressBook/store/selectors'
 import bountyPayoutAbi from '~/logic/bounty/bountyPayout.abi.js'
->>>>>>> support only rep, add validations etc
 import { SAFE_METHODS_NAMES } from '~/logic/contracts/methodIds'
 import { shortVersionOf } from '~/logic/wallets/ethAddresses'
-import { getWeb3 } from '~/logic/wallets/getWeb3'
 import OwnerAddressTableCell from '~/routes/safe/components/Settings/ManageOwners/OwnerAddressTableCell'
 import { getTxAmount } from '~/routes/safe/components/Transactions/TxsTable/columns'
 import { type Transaction } from '~/routes/safe/store/models/transaction'
@@ -79,7 +74,14 @@ type CustomDescProps = {
 
 type BountyPersonField = {
   label: string,
-  value: string,
+  value: {
+    addr: string,
+    amount: {
+      value: string,
+      isRepOnly: boolean,
+      unit: string,
+    },
+  },
 }
 
 const TransferDescription = ({ amount = '', recipient }: TransferDescProps) => {
@@ -223,31 +225,15 @@ const CustomDescription = ({ amount = 0, classes, data, recipient }: CustomDescP
   )
 }
 
-const web3 = getWeb3()
-
-const funcSigs = ['payoutNoReviewer', 'payoutReviewedDelivery', 'payout'].reduce((acc, funcName) => {
-  const funcAbi = bountyPayoutAbi.find((e) => e.name === funcName)
-  const funcSig = web3.eth.abi.encodeFunctionSignature(funcAbi)
-  acc[funcSig] = funcAbi
-  return acc
-}, {})
-
-const decodePayoutAmount = (param) => {
-  const val = web3.utils.toBN(param.substring(42), 16)
-  const roundValue = val.div(web3.utils.toBN(String(10 ** 16))).toNumber() / 100
-  const isRepOnly = val.toString().slice(-1) === '1'
-  const unit = isRepOnly ? 'reputation points' : 'DAI'
-  return `${roundValue} ${unit}`
-}
-
 const BountyPerson = ({ label, value }: BountyPersonField) => {
-  const addr = web3.utils.toChecksumAddress(value.substring(0, 42))
+  const { addr, amount } = value
   const recipientName = getNameFromAddressBook(addr)
-
   return (
     <div>
       <div style={{ fontWeight: 'bold' }}>{label}:</div>
-      <div>Value: {decodePayoutAmount(value)}</div>
+      <div>
+        Value: {amount.value} {amount.unit}
+      </div>
       <div>
         {recipientName ? (
           <div style={{ display: 'flex' }}>
@@ -266,28 +252,24 @@ const BountyPerson = ({ label, value }: BountyPersonField) => {
 }
 
 const BountyTxDescription = ({ classes, data }: CustomDescProps) => {
-  const funcSig = data.substring(0, 10)
-  const rawParams = data.slice(10)
-  const { inputs } = funcSigs[funcSig]
-  const params = web3.eth.abi.decodeParameters(inputs, `0x${rawParams}`)
   return (
     <>
       <Block className={classes.txData} data-testid={TRANSACTIONS_DESC_CUSTOM_DATA_TEST_ID}>
         <Bold>Bounty payout:</Bold>
-        <Paragraph className={classes.txDataParagraph} noMargin size="md">
-          {params._bountyId && (
+        <div className={classes.txDataParagraph}>
+          {data.bountyLink && (
             <p>
               Bounty:{' '}
-              <a href={'https://github.com/leapdao/' + web3.utils.hexToAscii(params._bountyId)}>
-                {web3.utils.hexToAscii(params._bountyId)}
+              <a href={data.bountyLink} rel="noopener noreferrer" target="_blank">
+                {data.bountyLink}
               </a>
             </p>
           )}
 
-          {params._gardener && <BountyPerson label="Gardener" value={params._gardener} />}
-          {params._worker && <BountyPerson label="Worker" value={params._worker} />}
-          {params._reviewer && <BountyPerson label="Reviewer" value={params._reviewer} />}
-        </Paragraph>
+          {data.gardener && <BountyPerson label="Gardener" value={data.gardener} />}
+          {data.worker && <BountyPerson label="Worker" value={data.worker} />}
+          {data.reviewer && <BountyPerson label="Reviewer" value={data.reviewer} />}
+        </div>
       </Block>
     </>
   )
@@ -308,7 +290,6 @@ const TxDescription = ({ classes, tx }: Props) => {
     upgradeTx,
   } = getTxData(tx)
   const amount = getTxAmount(tx, false)
-  const bountyPayoutAddr = getBountyPayoutContractAddr()
   return (
     <Block className={classes.txDataContainer}>
       {modifySettingsTx && action && (
@@ -319,7 +300,7 @@ const TxDescription = ({ classes, tx }: Props) => {
           removedOwner={removedOwner}
         />
       )}
-      {recipient === bountyPayoutAddr ? (
+      {tx.isBountyTx ? (
         <BountyTxDescription classes={classes} data={data} />
       ) : (
         <>

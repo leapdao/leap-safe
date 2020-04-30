@@ -1,6 +1,7 @@
 // @flow
 import React, { useEffect, useState } from 'react'
 
+import BountyTxIcon from './assets/bounty.svg'
 import CustomTxIcon from './assets/custom.svg'
 import IncomingTxIcon from './assets/incoming.svg'
 import OutgoingTxIcon from './assets/outgoing.svg'
@@ -18,6 +19,7 @@ const typeToIcon = {
   creation: SettingsTxIcon,
   cancellation: SettingsTxIcon,
   upgrade: SettingsTxIcon,
+  bounty: BountyTxIcon,
 }
 
 const typeToLabel = {
@@ -28,6 +30,7 @@ const typeToLabel = {
   creation: 'Safe created',
   cancellation: 'Cancellation transaction',
   upgrade: 'Contract Upgrade',
+  bounty: 'Bounty payout',
 }
 
 const TxType = ({ origin, txType }: { txType: TransactionType, origin: string | null }) => {
