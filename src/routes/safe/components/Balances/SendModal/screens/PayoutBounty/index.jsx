@@ -15,7 +15,7 @@ import Checkbox from '~/components/forms/Checkbox'
 import Field from '~/components/forms/Field'
 import GnoForm from '~/components/forms/GnoForm'
 import TextField from '~/components/forms/TextField'
-import { composeValidators, maxValue, mustBeFloat, required } from '~/components/forms/validator'
+import { composeValidators, maxValue, minMaxLength, mustBeFloat, required } from '~/components/forms/validator'
 import Block from '~/components/layout/Block'
 import Button from '~/components/layout/Button'
 import Col from '~/components/layout/Col'
@@ -146,7 +146,7 @@ const PayoutBounty = ({ initialValues, onClose, onNext }: Props) => {
                       placeholder="Link to bounty ticket"
                       text="Link to bounty ticket"
                       type="text"
-                      validate={required}
+                      validate={composeValidators(required, minMaxLength(1, 32))}
                     />
                   </Col>
                 </Row>
