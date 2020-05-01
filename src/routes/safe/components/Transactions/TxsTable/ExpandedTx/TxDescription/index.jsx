@@ -12,9 +12,8 @@ import Block from '~/components/layout/Block'
 import Bold from '~/components/layout/Bold'
 import LinkWithRef from '~/components/layout/Link'
 import Paragraph from '~/components/layout/Paragraph'
-import { getBountyPayoutContractAddr } from '~/config/index'
 import { getNameFromAddressBook } from '~/logic/addressBook/store/selectors'
-import bountyPayoutAbi from '~/logic/bounty/bountyPayout.abi.js'
+import bounty from '~/logic/bounty/index'
 import { SAFE_METHODS_NAMES } from '~/logic/contracts/methodIds'
 import { shortVersionOf } from '~/logic/wallets/ethAddresses'
 import OwnerAddressTableCell from '~/routes/safe/components/Settings/ManageOwners/OwnerAddressTableCell'
@@ -228,11 +227,12 @@ const CustomDescription = ({ amount = 0, classes, data, recipient }: CustomDescP
 const BountyPerson = ({ label, value }: BountyPersonField) => {
   const { addr, amount } = value
   const recipientName = getNameFromAddressBook(addr)
+  const roundValue = bounty.formatValue(amount.value)
   return (
     <div>
       <div style={{ fontWeight: 'bold' }}>{label}:</div>
       <div>
-        Value: {amount.value} {amount.unit}
+        Value: {roundValue} {amount.unit}
       </div>
       <div>
         {recipientName ? (
