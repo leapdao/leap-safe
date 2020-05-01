@@ -15,11 +15,10 @@ const decodeAddr = (param) => web3.utils.toChecksumAddress(param.substring(0, 42
 
 const decodePayoutAmount = (param) => {
   const val = web3.utils.toBN(param.substring(42), 16)
-  const roundValue = val.div(web3.utils.toBN(String(10 ** 16))).toNumber() / 100
   const isRepOnly = val.toString().slice(-1) === '1'
   const unit = isRepOnly ? 'reputation points' : 'DAI'
   return {
-    value: roundValue,
+    value: val,
     isRepOnly,
     unit,
   }
@@ -63,10 +62,13 @@ const decodeParams = (params) => {
     }
   }
 
-  bountyData.value = value.mul(toBN(10 ** 18)).toString()
+  bountyData.value = value.toString()
   return bountyData
 }
 
+const formatValue = (value) => value.div(web3.utils.toBN(String(10 ** 16))).toNumber() / 100
+
 export default {
   decodeParams,
+  formatValue,
 }
