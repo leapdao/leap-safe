@@ -36,6 +36,9 @@ type Props = {
 
 const useStyles = makeStyles(styles)
 
+export const max32bytesSansGithubPrefix = (value: string) =>
+  minMaxLength(1, 32)(value.replace('https://github.com/leapdao', ''))
+
 const PayoutBounty = ({ initialValues, onClose, onNext }: Props) => {
   const classes = useStyles()
   const { address: safeAddress, ethBalance, name: safeName } = useSelector(safeSelector)
@@ -146,7 +149,7 @@ const PayoutBounty = ({ initialValues, onClose, onNext }: Props) => {
                       placeholder="Link to bounty ticket"
                       text="Link to bounty ticket"
                       type="text"
-                      validate={composeValidators(required, minMaxLength(1, 32))}
+                      validate={composeValidators(required, max32bytesSansGithubPrefix)}
                     />
                   </Col>
                 </Row>
