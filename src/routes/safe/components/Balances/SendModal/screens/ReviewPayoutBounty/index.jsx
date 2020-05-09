@@ -68,7 +68,7 @@ const ReviewPayoutBounty = ({ closeSnackbar, enqueueSnackbar, onClose, onPrev, t
 
       const bountyContract = new web3.eth.Contract(bountyPayoutAbi, txRecipient)
 
-      const bountyId = asciiToHex(tx.bountyLink.replace('https://github.com/leapdao', ''))
+      const bountyId = asciiToHex(tx.bountyLink.replace('https://github.com/', ''))
 
       const stripHexPrefix = (v) => v.replace('0x', '')
 
