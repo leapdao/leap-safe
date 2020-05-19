@@ -226,7 +226,7 @@ const CustomDescription = ({ amount = 0, classes, data, recipient }: CustomDescP
 
 const BountyPerson = ({ label, value }: BountyPersonField) => {
   const { addr, amount } = value
-  const recipientName = getNameFromAddressBook(addr)
+  const recipientName = useSelector((state) => getNameFromAddressBook(state, addr))
   const roundValue = bounty.formatValue(amount.value)
   return (
     <div>
