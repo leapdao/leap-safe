@@ -29,23 +29,23 @@ yarn install
 
 For using the Rinkeby services:
 ```
-REACT_APP_INFURA_TOKEN=<infura project id> yarn start
+REACT_APP_GNOSIS_APPS_URL=https://apps.gnosis-safe.io REACT_APP_INFURA_TOKEN=<infura project id> yarn start
 ```
 
 If you prefer using Mainnet ones:
 ```
-REACT_APP_BLOCKNATIVE_KEY=<blocknative.com api key> REACT_APP_INFURA_TOKEN=<infura project id> yarn start-mainnet
+REACT_APP_GNOSIS_APPS_URL=https://apps.gnosis-safe.io REACT_APP_BLOCKNATIVE_KEY=<blocknative.com api key> REACT_APP_INFURA_TOKEN=<infura project id> yarn start-mainnet
 ```
 
 ### Building
 For Rinkeby:
 ```
-REACT_APP_INFURA_TOKEN=<infura project id> yarn build
+REACT_APP_GNOSIS_APPS_URL=https://apps.gnosis-safe.io REACT_APP_INFURA_TOKEN=<infura project id> yarn build
 ```
 
 For Mainnet:
 ```
-REACT_APP_BLOCKNATIVE_KEY=<blocknative.com api key> REACT_APP_INFURA_TOKEN=<infura project id> yarn build-mainnet
+REACT_APP_GNOSIS_APPS_URL=https://apps.gnosis-safe.io REACT_APP_BLOCKNATIVE_KEY=<blocknative.com api key> REACT_APP_INFURA_TOKEN=<infura project id> yarn build-mainnet
 ```
 
 ### Deploy on safe.leapdao.org
