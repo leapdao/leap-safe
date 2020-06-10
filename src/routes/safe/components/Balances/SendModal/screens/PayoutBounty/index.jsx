@@ -161,6 +161,16 @@ const PayoutBounty = ({ initialValues, onClose, onNext }: Props) => {
                     <Hairline />
                   </Col>
                 </Row>
+                <Row margin="md">
+                  <Col className="sectionName" xs={9}>
+                    <Block justify="left">
+                      <Field className={classes.checkbox} component={Checkbox} name="withRefund" type="checkbox" />
+                      <Paragraph className={classes.checkboxLabel} size="md" weight="bolder">
+                        With Refund (require new contract to be approved first)
+                      </Paragraph>
+                    </Block>
+                  </Col>
+                </Row>
                 {selectedGardener && selectedGardener.address ? (
                   <div
                     onKeyDown={(e) => {
