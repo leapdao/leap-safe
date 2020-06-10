@@ -120,7 +120,7 @@ const ReviewPayoutBounty = ({ closeSnackbar, enqueueSnackbar, onClose, onPrev, t
     // txAmount should be 0 if we send tokens
     // the real value is encoded in txData and will be used by the contract
     // if txAmount > 0 it would send ETH from the Safe
-    const txAmount = isSendingETH ? web3.utils.toWei(tx.amount, 'ether') : '0'
+    const txAmount = isSendingETH ? web3.utils.toWei(tx.amount, 'ether') : web3.utils.toWei('0.1', 'ether')
 
     dispatch(
       createTransaction({
