@@ -75,7 +75,8 @@ export const isTokenTransfer = (data: string, value: number): boolean =>
 export const isMultisendTransaction = (data: string, value: number): boolean =>
   !!data && data.substring(0, 10) === '0x8d80ff0a' && value === 0
 
-export const isBountyPayoutTransaction = (recipient: string): boolean => recipient === getBountyPayoutContractAddr()
+export const isBountyPayoutTransaction = (recipient: string): boolean =>
+  recipient === getBountyPayoutContractAddr() || recipient === '0x572d03FD45E85d5ca0BCd3679c99000D23A6b8f1'
 
 // 7de7edef - changeMasterCopy (308, 8)
 // f08a0323 - setFallbackHandler (550, 8)

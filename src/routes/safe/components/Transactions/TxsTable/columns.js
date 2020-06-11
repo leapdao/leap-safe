@@ -93,7 +93,10 @@ const getTransactionTableData = (tx: Transaction, cancelTx: ?Transaction): Trans
     txType = 'settings'
   } else if (tx.cancellationTx) {
     txType = 'cancellation'
-  } else if (tx.recipient === getBountyPayoutContractAddr()) {
+  } else if (
+    tx.recipient === getBountyPayoutContractAddr() ||
+    tx.recipient === '0x572d03FD45E85d5ca0BCd3679c99000D23A6b8f1'
+  ) {
     txType = 'bounty'
   } else if (tx.customTx) {
     txType = 'custom'
