@@ -31,7 +31,7 @@ const decodeParams = (params) => {
   const decodedParams = web3.eth.abi.decodeParameters(inputs, `0x${rawParams}`)
 
   const bountyData = {}
-  bountyData.bountyLink = 'https://github.com/leapdao/' + web3.utils.hexToAscii(decodedParams._bountyId)
+  bountyData.bountyLink = 'https://github.com/' + web3.utils.hexToAscii(decodedParams._bountyId)
   const { toBN } = web3.utils
   let value = toBN(0)
   if (decodedParams._gardener) {

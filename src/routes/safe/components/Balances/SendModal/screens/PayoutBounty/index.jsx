@@ -37,7 +37,7 @@ type Props = {
 const useStyles = makeStyles(styles)
 
 export const max32bytesSansGithubPrefix = (value: string) =>
-  minMaxLength(1, 32)(value.replace('https://github.com/leapdao', ''))
+  minMaxLength(1, 32)(value.replace('https://github.com/', ''))
 
 const PayoutBounty = ({ initialValues, onClose, onNext }: Props) => {
   const classes = useStyles()
