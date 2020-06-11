@@ -183,8 +183,14 @@ const PayoutBounty = ({ initialValues, onClose, onNext }: Props) => {
                         type="checkbox"
                       />
                       <Paragraph className={classes.checkboxLabel} size="md" weight="bolder">
-                        {'With Refund (needs at least 0.1Ξ in the Safe and '}
-                        <a href="https://github.com/leapdao/meta/blob/master/playbook/keybearers.md">new contract</a>
+                        {'Refund execution tx fee (needs at least 0.1Ξ in the Safe and '}
+                        <a
+                          href="https://github.com/leapdao/meta/blob/master/playbook/keybearers.md"
+                          rel="noopener noreferrer"
+                          target="_blank"
+                        >
+                          new contract
+                        </a>
                         {' approved)'}
                       </Paragraph>
                     </Block>
