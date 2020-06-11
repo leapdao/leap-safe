@@ -165,14 +165,6 @@ const PayoutBounty = ({ initialValues, onClose, onNext }: Props) => {
                   </Col>
                 </Row>
                 <Row margin="md">
-                  <Col className="sectionName" xs={3}>
-                    Gardener
-                  </Col>
-                  <Col center="xs" layout="column" xs={9}>
-                    <Hairline />
-                  </Col>
-                </Row>
-                <Row margin="md">
                   <Col className="sectionName" xs={9}>
                     <Block justify="left">
                       <Field
@@ -194,6 +186,14 @@ const PayoutBounty = ({ initialValues, onClose, onNext }: Props) => {
                         {' approved)'}
                       </Paragraph>
                     </Block>
+                  </Col>
+                </Row>
+                <Row margin="md">
+                  <Col className="sectionName" xs={3}>
+                    Gardener
+                  </Col>
+                  <Col center="xs" layout="column" xs={9}>
+                    <Hairline />
                   </Col>
                 </Row>
                 {selectedGardener && selectedGardener.address ? (
