@@ -46,7 +46,6 @@ const useStyles = makeStyles({
 const appVersion = process.env.REACT_APP_APP_VERSION ? `v${process.env.REACT_APP_APP_VERSION} ` : 'Versions'
 
 const Footer = () => {
-  const date = new Date()
   const classes = useStyles()
   const dispatch = useDispatch()
 
@@ -56,37 +55,15 @@ const Footer = () => {
 
   return (
     <footer className={classes.footer}>
-      <span className={classes.item}>©{date.getFullYear()} Gnosis</span>
+      <span className={classes.item}>Based on Gnosis Safe</span>
       <span className={classes.sep}>|</span>
-      <Link className={cn(classes.item, classes.link)} target="_blank" to="https://safe.gnosis.io/terms">
-        Terms
-      </Link>
-      <span className={classes.sep}>|</span>
-      <Link className={cn(classes.item, classes.link)} target="_blank" to="https://safe.gnosis.io/privacy">
-        Privacy
-      </Link>
-      <span className={classes.sep}>|</span>
-      <Link className={cn(classes.item, classes.link)} target="_blank" to="https://safe.gnosis.io/licenses">
-        Licenses
-      </Link>
-      <span className={classes.sep}>|</span>
-      <Link className={cn(classes.item, classes.link)} target="_blank" to="https://safe.gnosis.io/imprint">
-        Imprint
-      </Link>
-      <span className={classes.sep}>|</span>
-      <Link className={cn(classes.item, classes.link)} target="_blank" to="https://safe.gnosis.io/cookie">
-        Cookie Policy
-      </Link>
+      <span className={classes.item}>This instance is not affiliated with Gnosis</span>
       <span className={classes.sep}>-</span>
       <GnoButtonLink className={cn(classes.item, classes.link, classes.buttonLink)} onClick={openCookiesHandler}>
         Preferences
       </GnoButtonLink>
       <span className={classes.sep}>|</span>
-      <Link
-        className={cn(classes.item, classes.link)}
-        target="_blank"
-        to="https://github.com/gnosis/safe-react/releases"
-      >
+      <Link className={cn(classes.item, classes.link)} target="_blank" to="https://github.com/leapdao/safe-react/">
         {appVersion}
       </Link>
     </footer>
