@@ -4,6 +4,7 @@ import type { GetState, Dispatch as ReduxDispatch } from 'redux'
 import semverSatisfies from 'semver/functions/satisfies'
 
 import { onboardUser } from '~/components/ConnectButton'
+import { getBountyPayoutContractAddr } from '~/config/index'
 import { getGnosisSafeInstanceAt } from '~/logic/contracts/safeContracts'
 import { type NotificationsQueue, getNotificationsFromTxType, showSnackbar } from '~/logic/notifications'
 import {
@@ -130,6 +131,12 @@ const createTransaction = ({
     // if not set owner management tests will fail on ganache
     if (process.env.NODE_ENV === 'test') {
       sendParams.gas = '7000000'
+    }
+
+    // kosta: for some reason estimation is wrong for BoutyPayout with fee refund
+    // hardcoding the limit for bounty payouts as a dirty workaround
+    if (txArgs.to === getBountyPayoutContractAddr()) {
+      sendParams.gas = '2000000'
     }
 
     await tx

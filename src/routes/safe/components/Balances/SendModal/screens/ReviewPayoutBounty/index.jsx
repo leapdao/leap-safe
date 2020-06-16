@@ -55,7 +55,8 @@ const ReviewPayoutBounty = ({ closeSnackbar, enqueueSnackbar, onClose, onPrev, t
   const bountyTokenAddr = getBountyTokenAddr()
   const txToken = tokens.find((token) => token.address === bountyTokenAddr)
   const isSendingETH = false
-  const txRecipient = getBountyPayoutContractAddr()
+  // if no refund, use old version of bounty payout contract (mainnet hardcoded)
+  const txRecipient = tx.withRefund ? getBountyPayoutContractAddr() : '0x572d03FD45E85d5ca0BCd3679c99000D23A6b8f1'
 
   useEffect(() => {
     let isCurrent = true
@@ -120,7 +121,11 @@ const ReviewPayoutBounty = ({ closeSnackbar, enqueueSnackbar, onClose, onPrev, t
     // txAmount should be 0 if we send tokens
     // the real value is encoded in txData and will be used by the contract
     // if txAmount > 0 it would send ETH from the Safe
-    const txAmount = isSendingETH ? web3.utils.toWei(tx.amount, 'ether') : '0'
+    const txAmount = isSendingETH
+      ? web3.utils.toWei(tx.amount, 'ether')
+      : tx.withRefund
+      ? web3.utils.toWei('0.1', 'ether')
+      : '0'
 
     dispatch(
       createTransaction({

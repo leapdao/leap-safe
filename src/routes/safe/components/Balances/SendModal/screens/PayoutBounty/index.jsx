@@ -3,6 +3,7 @@ import IconButton from '@material-ui/core/IconButton'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import { makeStyles } from '@material-ui/core/styles'
 import Close from '@material-ui/icons/Close'
+import ERC20Detailed from '@openzeppelin/contracts/build/contracts/ERC20Detailed.json'
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 
@@ -22,7 +23,8 @@ import Col from '~/components/layout/Col'
 import Hairline from '~/components/layout/Hairline'
 import Paragraph from '~/components/layout/Paragraph'
 import Row from '~/components/layout/Row'
-import { getBountyTokenAddr } from '~/config/index'
+import { getBountyPayoutContractAddr, getBountyTokenAddr } from '~/config/index'
+import { getWeb3 } from '~/logic/wallets/getWeb3'
 import SafeInfo from '~/routes/safe/components/Balances/SendModal/SafeInfo'
 import AddressBookInput from '~/routes/safe/components/Balances/SendModal/screens/AddressBookInput'
 import { extendedSafeTokensSelector } from '~/routes/safe/container/selector'
@@ -70,6 +72,15 @@ const PayoutBounty = ({ initialValues, onClose, onNext }: Props) => {
   const [pristine, setPristine] = useState<boolean>(true)
   const [showWorkerField, setShowWorkerField] = useState<boolean>(false)
   const [showReviewerField, setShowReviewerField] = useState<boolean>(false)
+  const [allowance, setAllowance] = useState<boolean>(false)
+
+  const bountyAddress = getBountyPayoutContractAddr()
+
+  React.useEffect(() => {
+    const web3 = getWeb3()
+    const token = new web3.eth.Contract(ERC20Detailed.abi, txToken.address)
+    token.methods.allowance(safeAddress, bountyAddress).call().then(setAllowance)
+  }, [])
 
   React.useMemo(() => {
     if (selectedGardener === null && pristine) {
@@ -151,6 +162,30 @@ const PayoutBounty = ({ initialValues, onClose, onNext }: Props) => {
                       type="text"
                       validate={composeValidators(required, max32bytesSansGithubPrefix)}
                     />
+                  </Col>
+                </Row>
+                <Row margin="md">
+                  <Col className="sectionName" xs={9}>
+                    <Block justify="left">
+                      <Field
+                        className={classes.checkbox}
+                        component={Checkbox}
+                        disabled={parseFloat(ethBalance) < 0.1 || !allowance || allowance === '0'}
+                        name="withRefund"
+                        type="checkbox"
+                      />
+                      <Paragraph className={classes.checkboxLabel} size="md" weight="bolder">
+                        {'Refund execution tx fee (needs at least 0.1Ξ in the Safe and '}
+                        <a
+                          href="https://github.com/leapdao/meta/blob/master/playbook/keybearers.md"
+                          rel="noopener noreferrer"
+                          target="_blank"
+                        >
+                          new contract
+                        </a>
+                        {' approved)'}
+                      </Paragraph>
+                    </Block>
                   </Col>
                 </Row>
                 <Row margin="md">
