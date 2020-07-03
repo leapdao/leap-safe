@@ -1,6 +1,5 @@
-// @flow
-import bountyPayoutAbi from '~/logic/bounty/bountyPayout.abi'
-import { getWeb3 } from '~/logic/wallets/getWeb3'
+import bountyPayoutAbi from 'src/logic/bounty/bountyPayout.abi'
+import { getWeb3 } from 'src/logic/wallets/getWeb3'
 
 const web3 = getWeb3()
 
