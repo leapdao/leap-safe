@@ -33,9 +33,13 @@ export const styles = () => ({
   },
   txData: {
     wordBreak: 'break-all',
+    marginTop: '7px',
   },
   txDataParagraph: {
     whiteSpace: 'normal',
+  },
+  txDecodedDataParams: {
+    paddingLeft: '14px',
   },
   linkTxData: {
     textDecoration: 'underline',
@@ -138,7 +142,7 @@ const SettingsDescription = ({ action, addedOwner, newThreshold, removedOwner })
 const TxData = (props) => {
   const { classes, data } = props
   const [showTxData, setShowTxData] = useState(false)
-  const showExpandBtn = data.length > 20
+  const showExpandBtn = data.length > 42
   return (
     <Paragraph className={classes.txDataParagraph} noMargin size="md">
       {showExpandBtn ? (
@@ -178,7 +182,24 @@ const TxData = (props) => {
   )
 }
 
-const CustomDescription = ({ amount = 0, classes, data, recipient }: any) => {
+const DecodedTxData = ({ decodedParams, classes }: any) => {
+  const functionName = Object.keys(decodedParams)[0]
+  const functionArgs = Object.values(decodedParams[functionName])
+  return (
+    <div>
+      {functionName}
+      {'('}
+      <div className={classes.txDecodedDataParams}>
+        {functionArgs.map((value, i) => (
+          <TxData key={i} classes={classes} data={value} />
+        ))}
+      </div>
+      {')'}
+    </div>
+  )
+}
+
+const CustomDescription = ({ amount = 0, classes, data, recipient, decodedParams }: any) => {
   const recipientName = useSelector((state) => getNameFromAddressBook(state, recipient))
   return (
     <>
@@ -194,6 +215,12 @@ const CustomDescription = ({ amount = 0, classes, data, recipient }: any) => {
         <Bold>Data (hex encoded):</Bold>
         <TxData classes={classes} data={data} />
       </Block>
+      {decodedParams && (
+        <Block className={classes.txData}>
+          <Bold>Decoded data:</Bold>
+          <DecodedTxData classes={classes} decodedParams={decodedParams} />
+        </Block>
+      )}
     </>
   )
 }
@@ -211,6 +238,7 @@ const TxDescription = ({ classes, tx }) => {
     recipient,
     removedOwner,
     upgradeTx,
+    decodedParams,
   }: any = getTxData(tx)
   const amount = getTxAmount(tx, false)
   return (
@@ -224,7 +252,13 @@ const TxDescription = ({ classes, tx }) => {
         />
       )}
       {!upgradeTx && customTx && (
-        <CustomDescription amount={amount} classes={classes} data={data} recipient={recipient} />
+        <CustomDescription
+          amount={amount}
+          classes={classes}
+          data={data}
+          recipient={recipient}
+          decodedParams={decodedParams}
+        />
       )}
       {upgradeTx && <div>{data}</div>}
       {!cancellationTx && !modifySettingsTx && !customTx && !creationTx && !upgradeTx && (
