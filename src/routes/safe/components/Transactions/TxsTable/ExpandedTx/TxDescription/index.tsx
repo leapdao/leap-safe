@@ -193,8 +193,13 @@ const TxData = (props) => {
   )
 }
 
-const CustomDescription = ({ amount = 0, classes, data, recipient }: any) => {
+const CustomDescription = ({ amount = 0, classes, data, recipient, decodedParams }: any) => {
   const recipientName = useSelector((state) => getNameFromAddressBook(state, recipient))
+  let functionName, functionArgs
+  if (decodedParams) {
+    functionName = Object.keys(decodedParams)[0]
+    functionArgs = Object.values(decodedParams[functionName])
+  }
   return (
     <>
       <Block data-testid={TRANSACTIONS_DESC_CUSTOM_VALUE_TEST_ID}>
@@ -209,6 +214,25 @@ const CustomDescription = ({ amount = 0, classes, data, recipient }: any) => {
         <Bold>Data (hex encoded):</Bold>
         <TxData classes={classes} data={data} />
       </Block>
+      {decodedParams && (
+        <Block style={{ marginTop: '7px' }}>
+          <Bold>Decoded data:</Bold>
+          <br />
+          {functionName}
+          {'('}
+          <br />
+          {functionArgs.map((value, i) => (
+            <>
+              <span style={{ marginLeft: '14px' }}>
+                {value}
+                {i < functionArgs.length - 1 && <>{','}</>}
+                <br />
+              </span>
+            </>
+          ))}
+          {')'}
+        </Block>
+      )}
     </>
   )
 }
@@ -277,9 +301,9 @@ const TxDescription = ({ classes, tx }) => {
     recipient,
     removedOwner,
     upgradeTx,
+    decodedParams,
   }: any = getTxData(tx)
   const amount = getTxAmount(tx, false)
-  console.log(tx.isBountyTx)
   return (
     <Block className={classes.txDataContainer}>
       {modifySettingsTx && action && (
@@ -295,7 +319,13 @@ const TxDescription = ({ classes, tx }) => {
       ) : (
         <>
           {!upgradeTx && customTx && (
-            <CustomDescription amount={amount} classes={classes} data={data} recipient={recipient} />
+            <CustomDescription
+              amount={amount}
+              classes={classes}
+              data={data}
+              recipient={recipient}
+              decodedParams={decodedParams}
+            />
           )}
           {upgradeTx && <div>{data}</div>}
           {!cancellationTx && !modifySettingsTx && !customTx && !creationTx && !upgradeTx && (

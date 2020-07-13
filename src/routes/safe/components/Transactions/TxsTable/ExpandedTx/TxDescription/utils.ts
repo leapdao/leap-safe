@@ -12,7 +12,6 @@ const getSafeVersion = (data) => {
 
 export const getTxData = (tx) => {
   const txData: any = {}
-
   if (tx.decodedParams) {
     if (tx.isTokenTransfer) {
       const { to } = tx.decodedParams.transfer
@@ -54,6 +53,9 @@ export const getTxData = (tx) => {
       txData.customTx = true
     } else {
       txData.recipient = tx.recipient
+      txData.data = tx.data
+      txData.customTx = true
+      txData.decodedParams = tx.decodedParams
     }
   } else if (tx.isBountyTx) {
     txData.data = tx.bountyParams
