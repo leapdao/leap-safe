@@ -41,13 +41,8 @@ export const styles = () => ({
   txDataParagraph: {
     whiteSpace: 'normal',
   },
-  txDecodedData: {
-    wordBreak: 'break-all',
-    marginTop: '7px',
-  },
-  txDecodedDataParam: {
-    whiteSpace: 'normal',
-    marginLeft: '14px',
+  txDecodedDataParams: {
+    paddingLeft: '14px',
   },
   linkTxData: {
     textDecoration: 'underline',
@@ -162,7 +157,7 @@ const SettingsDescription = ({ action, addedOwner, newThreshold, removedOwner })
 const TxData = (props) => {
   const { classes, data } = props
   const [showTxData, setShowTxData] = useState(false)
-  const showExpandBtn = data.length > 20
+  const showExpandBtn = data.length > 42
   return (
     <Paragraph className={classes.txDataParagraph} noMargin size="md">
       {showExpandBtn ? (
@@ -202,13 +197,25 @@ const TxData = (props) => {
   )
 }
 
+const DecodedTxData = ({ decodedParams, classes }: any) => {
+  const functionName = Object.keys(decodedParams)[0]
+  const functionArgs = Object.values(decodedParams[functionName])
+  return (
+    <div>
+      {functionName}
+      {'('}
+      <div className={classes.txDecodedDataParams}>
+        {functionArgs.map((value, i) => (
+          <TxData key={i} classes={classes} data={value} />
+        ))}
+      </div>
+      {')'}
+    </div>
+  )
+}
+
 const CustomDescription = ({ amount = 0, classes, data, recipient, decodedParams }: any) => {
   const recipientName = useSelector((state) => getNameFromAddressBook(state, recipient))
-  let functionName, functionArgs
-  if (decodedParams) {
-    functionName = Object.keys(decodedParams)[0]
-    functionArgs = Object.values(decodedParams[functionName])
-  }
   return (
     <>
       <Block data-testid={TRANSACTIONS_DESC_CUSTOM_VALUE_TEST_ID}>
@@ -224,22 +231,9 @@ const CustomDescription = ({ amount = 0, classes, data, recipient, decodedParams
         <TxData classes={classes} data={data} />
       </Block>
       {decodedParams && (
-        <Block className={classes.txDecodedData}>
+        <Block className={classes.txData}>
           <Bold>Decoded data:</Bold>
-          <br />
-          {functionName}
-          {'('}
-          <br />
-          {functionArgs.map((value, i) => (
-            <>
-              <span className={classes.txDecodedDataParam}>
-                {value}
-                {i < functionArgs.length - 1 && <>{','}</>}
-                <br />
-              </span>
-            </>
-          ))}
-          {')'}
+          <DecodedTxData classes={classes} decodedParams={decodedParams} />
         </Block>
       )}
     </>
