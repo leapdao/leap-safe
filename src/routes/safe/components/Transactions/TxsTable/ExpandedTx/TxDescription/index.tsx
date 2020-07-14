@@ -36,9 +36,18 @@ export const styles = () => ({
   },
   txData: {
     wordBreak: 'break-all',
+    marginTop: '7px',
   },
   txDataParagraph: {
     whiteSpace: 'normal',
+  },
+  txDecodedData: {
+    wordBreak: 'break-all',
+    marginTop: '7px',
+  },
+  txDecodedDataParam: {
+    whiteSpace: 'normal',
+    marginLeft: '14px',
   },
   linkTxData: {
     textDecoration: 'underline',
@@ -215,7 +224,7 @@ const CustomDescription = ({ amount = 0, classes, data, recipient, decodedParams
         <TxData classes={classes} data={data} />
       </Block>
       {decodedParams && (
-        <Block style={{ marginTop: '7px' }}>
+        <Block className={classes.txDecodedData}>
           <Bold>Decoded data:</Bold>
           <br />
           {functionName}
@@ -223,7 +232,7 @@ const CustomDescription = ({ amount = 0, classes, data, recipient, decodedParams
           <br />
           {functionArgs.map((value, i) => (
             <>
-              <span style={{ marginLeft: '14px' }}>
+              <span className={classes.txDecodedDataParam}>
                 {value}
                 {i < functionArgs.length - 1 && <>{','}</>}
                 <br />
