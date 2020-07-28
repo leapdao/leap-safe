@@ -47,7 +47,7 @@ const ReviewPayoutBounty = ({ closeSnackbar, enqueueSnackbar, onClose, onPrev, t
   const txToken = tokens.find((token) => token.address === bountyTokenAddr)
   const isSendingETH = false
   // if no refund, use old version of bounty payout contract (mainnet hardcoded)
-  const txRecipient = tx.withRefund ? getBountyPayoutContractAddr() : '0x572d03FD45E85d5ca0BCd3679c99000D23A6b8f1'
+  const txRecipient = getBountyPayoutContractAddr()
 
   useEffect(() => {
     let isCurrent = true

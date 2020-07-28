@@ -218,7 +218,7 @@ export const calculateTransactionType = (tx: Transaction): TransactionTypeValues
     txType = TransactionTypes.SETTINGS
   } else if (tx.isCancellationTx) {
     txType = TransactionTypes.CANCELLATION
-  } else if (isBountyPayoutTransaction((tx as any).to)) {
+  } else if (isBountyPayoutTransaction(tx.recipient, tx.data)) {
     txType = TransactionTypes.BOUNTY
   } else if (tx.customTx) {
     txType = TransactionTypes.CUSTOM
@@ -257,7 +257,7 @@ export const buildTx = async ({
   const refundParams = await getRefundParams(tx, getERC20DecimalsAndSymbol)
   const decodedParams = getDecodedParams(tx)
   const confirmations = getConfirmations(tx)
-  const isBountyPayout = isBountyPayoutTransaction(tx.to)
+  const isBountyPayout = isBountyPayoutTransaction(tx.to, tx.data)
 
   let tokenDecimals = 18
   let tokenSymbol = 'ETH'

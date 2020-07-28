@@ -123,4 +123,7 @@ export const isERC721Contract = async (contractAddress: string): Promise<boolean
   return isERC721
 }
 
-export const isBountyPayoutTransaction = (recipient: string): boolean => recipient === getBountyPayoutContractAddr()
+export const isBountyPayoutTransaction = (to: string, data?: string): boolean =>
+  to === getBountyPayoutContractAddr() &&
+  data &&
+  (data.startsWith('0xfdcdab0b') || data.startsWith('0x4afbda3b') || data.startsWith('0xd89a4076'))

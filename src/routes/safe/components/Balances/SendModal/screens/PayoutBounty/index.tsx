@@ -171,15 +171,7 @@ const PayoutBounty = ({ initialValues, onClose, onNext }) => {
                         type="checkbox"
                       />
                       <Paragraph className={classes.checkboxLabel} size="md" weight="bolder">
-                        {'Refund execution tx fee (needs at least 0.1Ξ in the Safe and '}
-                        <a
-                          href="https://github.com/leapdao/meta/blob/master/playbook/keybearers.md"
-                          rel="noopener noreferrer"
-                          target="_blank"
-                        >
-                          new contract
-                        </a>
-                        {' approved)'}
+                        Refund execution tx fee (needs at least 0.1Ξ in the Safe)
                       </Paragraph>
                     </Block>
                   </Col>
