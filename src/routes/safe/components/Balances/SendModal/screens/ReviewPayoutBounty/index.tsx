@@ -54,7 +54,7 @@ const ReviewPayoutBounty = ({ closeSnackbar, enqueueSnackbar, onClose, onPrev, t
 
     const estimateGas = async () => {
       const web3 = getWeb3()
-      const { asciiToHex, fromWei, padLeft, toBN, toHex } = web3.utils
+      const { asciiToHex, fromWei, padLeft, toBN, toHex, toWei } = web3.utils
 
       let txData = EMPTY_DATA
 
@@ -65,7 +65,7 @@ const ReviewPayoutBounty = ({ closeSnackbar, enqueueSnackbar, onClose, onPrev, t
       const stripHexPrefix = (v) => v.replace('0x', '')
 
       const _getInput = (_address, _amount, _isRepOnly) => {
-        const _amountBN = toBN(_amount * 10 ** 18)
+        const _amountBN = toWei(toBN(_amount))
         const _amountHex = padLeft(
           stripHexPrefix(toHex(_isRepOnly ? _amountBN.add(toBN(1)).toString() : _amountBN.toString())),
           24,
